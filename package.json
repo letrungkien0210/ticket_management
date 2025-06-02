@@ -1,0 +1,65 @@
+{
+  "name": "ticket-management",
+  "version": "1.0.0",
+  "description": "Customer Information Management + QR Code Check-in System",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm run --parallel dev",
+    "dev:backend": "pnpm --filter @ticket-management/backend dev",
+    "dev:frontend": "pnpm --filter @ticket-management/frontend dev",
+    "build": "pnpm run --filter @ticket-management/backend build && pnpm run --filter @ticket-management/frontend build",
+    "build:backend": "pnpm --filter @ticket-management/backend build",
+    "build:frontend": "pnpm --filter @ticket-management/frontend build",
+    "start": "pnpm run --parallel start",
+    "start:backend": "pnpm --filter @ticket-management/backend start",
+    "start:frontend": "pnpm --filter @ticket-management/frontend start",
+    "lint": "pnpm run --recursive lint",
+    "lint:fix": "pnpm run --recursive lint:fix",
+    "clean": "pnpm run --recursive clean && rm -rf node_modules",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "docker:logs": "docker-compose logs -f",
+    "install:all": "pnpm install",
+    "type-check": "pnpm run --recursive type-check",
+    "docker:prod:up": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
+    "docker:prod:build": "docker-compose -f docker-compose.prod.yml build",
+    "docker:prod:logs": "docker-compose -f docker-compose.prod.yml logs -f",
+    "setup:dev": "./scripts/dev-setup.sh",
+    "setup:dev:manual": "./scripts/dev-setup.sh manual",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:staging": "./scripts/deploy.sh staging",
+    "deploy:production": "./scripts/deploy.sh production"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-config-next": "^14.0.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "ticket-management",
+    "customer-management",
+    "qr-code",
+    "check-in",
+    "event-management",
+    "monorepo"
+  ],
+  "author": "Kien Le",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/letrungkien0210/ticket-management.git"
+  }
+} 

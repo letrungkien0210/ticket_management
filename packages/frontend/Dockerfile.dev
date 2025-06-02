@@ -1,0 +1,30 @@
+# Development Dockerfile for monorepo structure
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy root package.json files
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+
+# Copy all package.json files to understand workspace structure
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/frontend/package.json ./packages/frontend/
+
+# Install all dependencies at root level (monorepo style)
+RUN pnpm install
+
+# Copy frontend source code
+COPY packages/frontend ./packages/frontend
+
+# Set working directory to frontend
+WORKDIR /app/packages/frontend
+
+# Expose port
+EXPOSE 3000
+
+# Start development server
+CMD ["pnpm", "run", "dev"] 

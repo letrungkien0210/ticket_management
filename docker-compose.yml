@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: ticket-management-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: ticket_management
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - ticket-management-network
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile.dev
+    container_name: ticket-management-backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      NODE_ENV: development
+      PORT: 5001
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/ticket_management?authSource=admin
+      FRONTEND_URL: http://localhost:3000
+      JWT_SECRET: super-secret-jwt-key-for-development
+      JWT_EXPIRES_IN: 7d
+    depends_on:
+      - mongodb
+    volumes:
+      - ./packages/backend/src:/app/packages/backend/src
+      - ./packages/backend/package.json:/app/packages/backend/package.json
+    networks:
+      - ticket-management-network
+
+  # Frontend Application
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile.dev
+    container_name: ticket-management-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:5001
+    depends_on:
+      - backend
+    volumes:
+      - ./packages/frontend/app:/app/packages/frontend/app
+      - ./packages/frontend/package.json:/app/packages/frontend/package.json
+    networks:
+      - ticket-management-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  ticket-management-network:
+    driver: bridge 
